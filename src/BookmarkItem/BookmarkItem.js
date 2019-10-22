@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Rating from '../Rating/Rating';
 import config from '../config';
 import BookmarksContext from '../BookmarksContext';
@@ -16,8 +17,8 @@ function deleteBookmarkRequest(bookmarkId, callback) {
       if (!res.ok) {
         // get the error message from the response,
         return res.json().then(error => {
-          // then throw it
-          throw error
+          
+          Promise.reject(error)
         })
       }
       return res.json()
@@ -60,6 +61,14 @@ export default function BookmarkItem(props) {
             >
               Delete
             </button>
+            {' '}
+            <button
+              className='BookmarkItem__description'
+            >
+              <Link to={`/edit/${props.id}`}>
+                Update 
+              </Link>
+            </button>
           </div>
         </li>
       )}
@@ -97,7 +106,18 @@ BookmarkItem.propTypes = {
   description: PropTypes.string
 };
 
+BookmarkItem.propTypes = {
+  id: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+  ]).isRequired,
+  title: PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired,
+  desciption: PropTypes.string,
+  rating: PropTypes.number.isRequired,
+  onClickDelete: PropTypes.func,
+}
+
 BookmarkItem.defaultProps = {
-  rating: 1,
-  description: ""
-};
+  onClickDelete: () => {},
+}
